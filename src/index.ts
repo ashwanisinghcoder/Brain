@@ -7,7 +7,7 @@ import cors from "cors"
 import { usermodel, contentmodel, tagsmodel, linkSchemamodel } from "./db"
 import { userMiddlware } from "./userMiddleweare"
 import { random } from "./utils"
-const JWT_SECRETE = "ashwanisingh"
+import { JWT_SECRETE } from "./config"
 const app = express();
 app.use(express.json())
 app.use(cors());
@@ -36,21 +36,23 @@ app.post("/api/v1/signin", async(req: Request ,res: Response) => {
         })
     }
 })
-app.post("/api/v1/content",userMiddlware , async(req: Request ,res: Response) => {
-        const link = req.body.link;
-        const type = req.body.type;
-        await contentmodel.create({
-                link : link,
-                type : type,
-               //@ts-ignore
-                userId : req.userId,
-                tags : []
+
+app.post("/api/v1/content", userMiddlware, async (req: Request, res: Response) => {  // Create a new content
+    const link = req.body.link;
+    const type = req.body.type;
+    const title = req.body.title;
+    await contentmodel.create({
+        link: link,
+        type: type,
+        title: title,
+        // @ts-ignore
+        userId: req.userId,
     })
-    
+
     res.status(200).json({
-        message : "content created successfully"
+        message: "content created successfully",
     })
-})
+})  
 app.get("/api/v1/content",userMiddlware , async(req: Request ,res: Response) => {
     //@ts-ignore
     const userId = req.userId;

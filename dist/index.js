@@ -11,7 +11,7 @@ const cors_1 = __importDefault(require("cors"));
 const db_1 = require("./db");
 const userMiddleweare_1 = require("./userMiddleweare");
 const utils_1 = require("./utils");
-const JWT_SECRETE = "ashwanisingh";
+const config_1 = require("./config");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
@@ -29,7 +29,7 @@ app.post("/api/v1/signin", async (req, res) => {
     const { username, password } = req.body;
     const user = await db_1.usermodel.findOne({ username: username, password: password });
     if (user) {
-        const token = jsonwebtoken_1.default.sign({ id: user._id.toString() }, JWT_SECRETE);
+        const token = jsonwebtoken_1.default.sign({ id: user._id.toString() }, config_1.JWT_SECRETE);
         res.status(200).json({
             message: "user signin success",
             token: token
@@ -44,15 +44,16 @@ app.post("/api/v1/signin", async (req, res) => {
 app.post("/api/v1/content", userMiddleweare_1.userMiddlware, async (req, res) => {
     const link = req.body.link;
     const type = req.body.type;
+    const title = req.body.title;
     await db_1.contentmodel.create({
         link: link,
         type: type,
-        //@ts-ignore
+        title: title,
+        // @ts-ignore
         userId: req.userId,
-        tags: []
     });
     res.status(200).json({
-        message: "content created successfully"
+        message: "content created successfully",
     });
 });
 app.get("/api/v1/content", userMiddleweare_1.userMiddlware, async (req, res) => {
