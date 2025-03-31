@@ -3,7 +3,6 @@ import { Request , Response , NextFunction } from "express";
 const jwtSecret = "ashwanisingh"
 export const userMiddlware  = async (req : Request , res : Response , next : NextFunction)=>{
     const header = req.headers.authorization;   
-    console.log(header)
     if(!header){
         res.status(401).json({
             message : "no token found"
